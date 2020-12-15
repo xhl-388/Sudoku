@@ -34,7 +34,6 @@ void Game::Init()
 	ResourceManager::LoadTexture("res/texture/blue.png", "blue");
 	ResourceManager::LoadTexture("res/texture/red.png", "red");
 	ResourceManager::LoadTexture("res/texture/purple.png", "purple");
-	ResourceManager::LoadTexture("res/texture/awesomeface.png", "empty");
 	ResourceManager::LoadTexture("res/texture/background.png", "background");
 	ResourceManager::LoadTexture("res/texture/Number0.png", "Number0");
 	ResourceManager::LoadTexture("res/texture/Number1.png", "Number1");
@@ -48,6 +47,8 @@ void Game::Init()
 	ResourceManager::LoadTexture("res/texture/Number9.png", "Number9");
 	ResourceManager::LoadTexture("res/texture/menu.png", "menu");
 	ResourceManager::LoadTexture("res/texture/win.png", "win");
+	ResourceManager::LoadTexture("res/texture/up.png", "up");
+	ResourceManager::LoadTexture("res/texture/down.png", "down");
 	//设置渲染器
 	Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 	//配置一些静态物体
@@ -62,7 +63,8 @@ void Game::Init()
 	for (int i = 0; i < 3; i++)
 		timePic.push_back(NumberObject(0, glm::vec2(offset_t.x + size_ti.x * i, offset_t.y), size_ti));
 	for (int i = 3; i < 5; i++)
-		timePic.push_back(NumberObject(0, glm::vec2(offset_t.x + size_ti.x * i + 10, offset_t.y), size_ti));
+		timePic.push_back(NumberObject(0, glm::vec2(offset_t.x + size_ti.x * i + 30, offset_t.y), size_ti));
+	dog = GameObject(glm::vec2(offset_t.x, offset_t.y + 50), glm::vec2(200,200), ResourceManager::GetTexture("up"));
 	//进行全局设置
 	OverallSet();
 }
@@ -73,6 +75,17 @@ void Game::Update(GLfloat dt)
 	if (State == GameState::GAME_ACTIVE)
 		Time += dt;
 	RefreshTime();
+	int iTime=1;
+	if (Time < 300)
+		iTime = static_cast<int>(2 * Time);
+	else if (Time < 600)
+		iTime = static_cast<int>(4 * Time);
+	else
+		iTime = static_cast<int>(8 * Time);
+	if (iTime % 2 == 0)
+		dog.Sprite = ResourceManager::GetTexture("up");
+	else
+		dog.Sprite = ResourceManager::GetTexture("down");
 }
 
 void Game::ProcessInput(GLFWwindow* window)
@@ -92,6 +105,7 @@ void Game::Render()
 			input_background.Draw(*Renderer);
 		for (auto& pic : staticPic)
 			pic.Draw(*Renderer);
+		dog.Draw(*Renderer);
 		for (auto& pic : timePic)
 			pic.Draw(*Renderer);
 		for (auto& vec : Numbers)

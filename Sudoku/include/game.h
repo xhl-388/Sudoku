@@ -66,6 +66,8 @@ public:
     //保存时间信息
     void SaveTimeData();
 private:
+    //狗
+    GameObject dog;
     //输入背景
     GameObject input_background;
     //原有不可修改数字的背景
